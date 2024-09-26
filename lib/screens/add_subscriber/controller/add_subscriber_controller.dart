@@ -10,14 +10,74 @@ class AddSubscriberController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController skipController = TextEditingController();
-  RxList<String> fixedWeekdayLeaves=<String>[].obs;
+  RxList<String> fixedWeekdayLeaves = <String>[].obs;
   Rxn<DateTime> selectedStartDate = Rxn<DateTime>(null);
   Rxn<DateTime> endDate = Rxn<DateTime>(null);
   Rxn<DateTime> selectedEndDate = Rxn<DateTime>(null);
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  RxList<String> selectedWeekdays = <String>[].obs;
+  RxMap<String, bool> tempSelection = {
+    'Monday': false,
+    'Tuesday': false,
+    'Wednesday': false,
+    'Thursday': false,
+    'Friday': false,
+    'Saturday': false,
+  }.obs;
 
   final CollectionReference users =
       FirebaseFirestore.instance.collection('users');
+
+  @override
+  void onInit() {
+    skipController.text = "0";
+    super.onInit();
+  }
+
+  conformFixWeekDays(Map<String, bool> tempSelection) {
+    selectedWeekdays.value =
+        tempSelection.keys.where((day) => tempSelection[day] == true).toList();
+  }
+
+  setWeekDay(String weekday, bool? value) {
+    tempSelection[weekday] = value ?? false;
+  }
+
+  // void extendEndDateWithLeaves(List<DateTime> randomLeaves) {
+  //   int extraDays = skippedDays; // Start with the skipped days
+  //   DateTime newEndDate = endDate;
+  //
+  //   // For each skipped day, find the next available non-leave day
+  //   while (extraDays > 0) {
+  //     newEndDate = newEndDate.add(Duration(days: 1));
+  //
+  //     // If it's a fixed leave day, extend and count it as an extra day
+  //     if (isFixedLeaveDay(newEndDate)) {
+  //       extraDays++;
+  //       continue;
+  //     }
+  //
+  //     // If it's a random leave day, skip it
+  //     if (randomLeaves.contains(newEndDate)) continue;
+  //
+  //     // Reduce extra day count if the day is valid (not a fixed leave or random leave)
+  //     extraDays--;
+  //   }
+  //
+  //   // Update the end date
+  //   endDate = newEndDate;
+  // }
+  //
+  // // Add random leave and increase skipped days
+  // void addRandomLeave(DateTime leaveDate) {
+  //   // Ensure the leave day isn't on a fixed leave day (Sunday or fixed weekday)
+  //   if (isFixedLeaveDay(leaveDate)) {
+  //     print("Can't take a leave on a fixed leave day.");
+  //     return;
+  //   }
+  //
+  //   skippedDays++;
+  // }
 
   void addSubscription() {
     if (formKey.currentState!.validate()) {
@@ -26,9 +86,7 @@ class AddSubscriberController extends GetxController {
           name: nameController.text,
           username: usernameController.text,
           startDate: selectedStartDate.value!,
-          endDate: selectedStartDate.value!.add(Duration(
-              days: UtilsMethods.getDaysInMonth(selectedStartDate.value!.year,
-                  selectedStartDate.value!.month))),
+          fixedWeekdayLeaves: fixedWeekdayLeaves,
           // Assuming 30-day subscription
         );
         users.add(subscription.toJson()).then((doc) {
@@ -49,6 +107,7 @@ class AddSubscriberController extends GetxController {
       }
     }
   }
+
   // Helper function to check if a date is a fixed leave day
   bool isFixedLeaveDay(DateTime date) {
     // Check if the date is a Sunday (fixed company leave)

@@ -30,8 +30,8 @@ class UserListController extends GetxController {
         return SubscriptionModel(
           name: doc['name'],
           username: doc['username'],
-          startDate: (doc['startDate'] as Timestamp).toDate(),
-          endDate: (doc['endDate'] as Timestamp).toDate(),
+          startDate: (doc['startDate'] as Timestamp).toDate(), fixedWeekdayLeaves: doc['fixedWeekdayLeaves'],
+          // endDate: (doc['endDate'] as Timestamp).toDate(),
         );
       }).toList();
       _subscriptionsSubject.add(subscriptions);

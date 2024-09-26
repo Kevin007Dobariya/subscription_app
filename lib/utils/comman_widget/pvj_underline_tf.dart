@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,12 +8,13 @@ class PvjUnderlineTf extends StatelessWidget {
       required this.controller,
       required this.labelText,
       this.keyboardType,
+      this.onChanged,
       this.inputFormatters,
       this.validator});
 
   final TextEditingController controller;
   final String labelText;
-  void Function(String)? onChanged;
+  final void Function(String)? onChanged;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
@@ -23,7 +23,7 @@ class PvjUnderlineTf extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      onChanged: ,
+      onChanged: onChanged,
       keyboardType: keyboardType,inputFormatters:inputFormatters,
       decoration: InputDecoration(
         labelText: labelText,
