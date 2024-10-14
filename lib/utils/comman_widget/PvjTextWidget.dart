@@ -45,6 +45,7 @@ class HeadlineBodyOneBaseWidget extends StatelessWidget {
         letterSpacing: latterSpacing,
         fontSize: fontSize,
         fontWeight: fontWeight,
+        color: titleColor
       ),
       textAlign: titleTextAlign,
       maxLines: maxLine,

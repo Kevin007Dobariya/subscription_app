@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:p_v_j/screens/authentication/login_screen.dart';
 import 'package:p_v_j/screens/user_list/user_list_screens.dart';
 
 import 'firebase_options.dart';
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: UserListScreens(),
+      debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
     );
   }
 }
